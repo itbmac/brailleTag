@@ -62,35 +62,36 @@ module label(text, depth=2) {
 				width  = ( max_length(text) )  * font_charWidth,
             height = len(text)  * font_lineHeight,
 				heightOffset = font_lineHeight/3.0,
-				holeRadius = len(text)  * font_lineHeight / 3.0
+				holeRadius = len(text)  * font_lineHeight / 4.0
 			  )
 	{
 
      difference () {
-        union() {
+        
+			union() {
 				// main rectangle
-            translate([-holeRadius, heightOffset, 0])
-                cube([width + 2*holeRadius,height, depth], true);
+	        	translate([-holeRadius, heightOffset, 0])
+	            cube([width + 2*holeRadius,height, depth], true);
 				//rounded ends
 				translate([width/2, heightOffset, -depth/2])
 					cylinder(r=height/2,h=depth);
 				translate([-width/2-holeRadius*2, heightOffset, -depth/2])
 					cylinder(r=height/2,h=depth);
-				// braille
-           	drawText(text);
-          }
-			// hole for tag
-         translate([-width/2-holeRadius*2, heightOffset,-depth]) cylinder(r=holeRadius,h=depth*2);  
-    }
-	}
+	           	drawText(text);
+	        } // end union
+		// hole for tag
+        translate([-width/2-holeRadius*2, heightOffset,-depth]) cylinder(r=holeRadius,h=depth*2);  
+   	}
+
+	} // assign scope
 }
 
 $fa = 0.01; $fs = 0.5; 
 
 // global dimensions from http://www.brailleauthority.org/sizespacingofbraille/sizespacingofbraille.pdf
 
-// these dimensions for signage
 
+// these dimensions for letters
 font_dotHeight = 0.7;
 font_dotBase = 1.6;  
 font_dotRadius = font_dotBase /2;
@@ -99,12 +100,13 @@ font_charWidth = 7.62;
 font_lineHeight = 11; 
 
 
-// compute the sphere to make the raised dot
-font_dotSphereRadius  =  chord_radius(font_dotBase,font_dotHeight);
-font_dotSphereOffset =font_dotSphereRadius - font_dotHeight;
-
+// inputs
 text = ["Aremiti"]; 
+//text = ["All human beings are born", "free and equal in dignity and", "rights. They are endowed with", "reason and conscience and", "should act towards one another", "in a spirit of brotherhood."]; 
+tagDepth = 4.0;
 
-/ text = ["All human beings are born", "free and equal in dignity and", "rights. They are endowed with", "reason and conscience and", "should act towards one another", "in a spirit of brotherhood."]; 
+// compute the sphere to make the raised dot
+font_dotSphereRadius =  chord_radius(font_dotBase,font_dotHeight);
+font_dotSphereOffset = -(tagDepth - 2.0)/2.0 + font_dotSphereRadius - font_dotHeight;
 
-label(text);
+label(text, tagDepth);
