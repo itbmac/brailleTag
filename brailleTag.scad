@@ -1,6 +1,15 @@
 /*
-  based on http://www.thingiverse.com/thing:47411 by kitwallace
-  mods : 
+  	Braille Tag
+	Spencer Barton
+
+	based on http://www.thingiverse.com/thing:47411 by kitwallace
+
+	Directions: Upload your text to be converted to braille and placed on a tag
+
+  	mods :
+
+	@TODO:
+	- Add numbers 
 
 */
 
@@ -49,18 +58,31 @@ module drawText(text) {
 }
 
 module label(text, depth=2) {
-     assign(width =( max_length(text) + 2)  * font_charWidth,
-                 height = len(text)  * font_lineHeight )
- 
+     assign(
+				width  = ( max_length(text) )  * font_charWidth,
+            height = len(text)  * font_lineHeight,
+				heightOffset = font_lineHeight/3.0,
+				holeRadius = len(text)  * font_lineHeight / 3.0
+			  )
+	{
+
      difference () {
         union() {
-            translate([0, font_lineHeight/3, 0])
-                cube([width,height, depth], true);
-           drawText(text);
+				// main rectangle
+            translate([-holeRadius, heightOffset, 0])
+                cube([width + 2*holeRadius,height, depth], true);
+				//rounded ends
+				translate([width/2, heightOffset, -depth/2])
+					cylinder(r=height/2,h=depth);
+				translate([-width/2-holeRadius*2, heightOffset, -depth/2])
+					cylinder(r=height/2,h=depth);
+				// braille
+           	drawText(text);
           }
-         translate([width/2-3 ,height-4,-5]) cylinder(r=1,h=10);
-         translate([-(width/2-3) ,height-4,-5]) cylinder(r=1,h=10);  
+			// hole for tag
+         translate([-width/2-holeRadius*2, heightOffset,-depth]) cylinder(r=holeRadius,h=depth*2);  
     }
+	}
 }
 
 $fa = 0.01; $fs = 0.5; 
@@ -76,12 +98,13 @@ font_dotWidth= 2.54;
 font_charWidth = 7.62;
 font_lineHeight = 11; 
 
+
 // compute the sphere to make the raised dot
 font_dotSphereRadius  =  chord_radius(font_dotBase,font_dotHeight);
 font_dotSphereOffset =font_dotSphereRadius - font_dotHeight;
 
 text = ["Aremiti"]; 
 
-// text = ["All human beings are born", "free and equal in dignity and", "rights. They are endowed with", "reason and conscience and", "should act towards one another", "in a spirit of brotherhood."]; 
+/ text = ["All human beings are born", "free and equal in dignity and", "rights. They are endowed with", "reason and conscience and", "should act towards one another", "in a spirit of brotherhood."]; 
 
 label(text);
