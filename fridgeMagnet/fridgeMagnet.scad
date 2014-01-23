@@ -36,12 +36,13 @@ font_dotSphereRadius =  chord_radius(font_dotBase,font_dotHeight);
 font_dotSphereOffset = -(cylinderDepth - 2.0)/2.0 + font_dotSphereRadius - font_dotHeight;
 
 // inputs
-letter = "A"; 
+letter = "C"; 
 cylinderRadius = 8.0;
 cylinderDepth = 2.0;
 magnetRadius = 2.0;
 magnetDepth = 1.0;
 guideDots = true;
+cylinderMagnet = false;
 
 /*===================================================
   Functions
@@ -89,9 +90,12 @@ module magnet(letter) {
      difference () {
         union() {
             // main rectangle
-            //cylinder(r = cylinderRadius,h = cylinderDepth);
-				translate([0,0,cylinderDepth/2])
-				resize(newsize=[cylinderRadius*2,cylinderRadius*2,cylinderDepth]) sphere(r=cylinderRadius);  
+            if (cylinderMagnet == true) {
+					cylinder(r = cylinderRadius,h = cylinderDepth);
+				} else {
+					translate([0,0,cylinderDepth/2])
+						resize(newsize=[cylinderRadius*2,cylinderRadius*2,cylinderDepth]) sphere(r=cylinderRadius);  
+				}
             // write regular letter
             translate([-cylinderRadius/3.0,0,cylinderDepth])
 					write(letter,t=font_dotSphereOffset,h=cylinderRadius,center=true, font = "orbitron.dxf");
@@ -99,8 +103,10 @@ module magnet(letter) {
 				translate([cylinderRadius/4.0,font_dotWidth,cylinderDepth])
             	transcribeChar(letter);
 				// indicators
-				translate([cylinderRadius/4.0,font_dotWidth,cylinderDepth])
-					drawGuideDots();
+				if (guideDots == true) {
+					translate([cylinderRadius/4.0,font_dotWidth,cylinderDepth])
+						drawGuideDots();
+				}
         } // end union
         
         // hole for magnet
