@@ -44,9 +44,10 @@ font_dotSphereOffset = -(cylinderDepth - 2.0)/2.0 + font_dotSphereRadius - font_
 // inputs
 letter = "A"; 
 cylinderRadius = 8.0;
-cylinderDepth = 4.0;
+cylinderDepth = 2.0;
 magnetRadius = 2.0;
 magnetDepth = 1.0;
+guideDots = true;
 
 /*===================================================
   Functions
@@ -59,15 +60,16 @@ function chord_radius(length,height) = ( length * length /(4 * height) + height)
   Modules
   =================================================== */
 
-module drawDot(location) {  
+module drawDot(location, radius) {  
     translate(location) 
-       translate ([0,0, -font_dotSphereOffset ]) sphere(font_dotSphereRadius);
+       translate ([0,0, -font_dotSphereOffset ]) 
+			sphere(radius);
 }
 
 module drawCharacter(charMap) {
      for(i = [0: len(charMap)-1]) 
         assign(dot = charMap[i] - 1)
-        drawDot(   [floor(dot / 3) * font_dotWidth,  -((dot %3) * font_dotWidth),   0],  font_dotRadius  );
+        drawDot(   [floor(dot / 3) * font_dotWidth,  -((dot %3) * font_dotWidth),   0],  font_dotRadius );
 }
 
 
@@ -81,6 +83,13 @@ module transcribeChar(char) {
     }
 }
 
+module drawGuideDots() {
+	  assign( charMap = [1,2,3,4,5,6] )
+     for(i = [0: len(charMap)-1]) 
+        assign(dot = charMap[i] - 1)
+        drawDot(   [floor(dot / 3) * font_dotWidth,  -((dot %3) * font_dotWidth),   0],  font_dotRadius, [.25,.25,.25] );
+}
+
 module magnet(letter) {
 
      difference () {
@@ -90,13 +99,17 @@ module magnet(letter) {
             // write regular letter
             translate([-cylinderRadius/3.0,0,cylinderDepth])
 					write(letter,t=font_dotSphereOffset,h=cylinderRadius,center=true, font = "orbitron.dxf");
+				// chars
 				translate([cylinderRadius/3.0,0,cylinderDepth])
             	transcribeChar(letter);
+				// indicators
+				translate([cylinderRadius/3.0,0,cylinderDepth])
+					drawGuideDots();
         } // end union
         
         // hole for magnet
-		  translate([0,0,-cylinderDepth + magnetDepth*2])
-            cylinder(r=magnetRadius,h=magnetDepth+2);  
+		  translate([0,0,-.5])
+            cylinder(r=magnetRadius,h=magnetDepth+1);  
     }
 
 }
