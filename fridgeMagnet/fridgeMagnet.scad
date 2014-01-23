@@ -6,12 +6,6 @@
 
     Directions: Upload your alphebetic character [A-Z,a-z] to be converted to braille and placed on a tag
 
-    mods :
-
-    @TODO:
-    - Add numbers 
-    - more padding on left
-
 */
 
 use <Write.scad>
@@ -87,7 +81,7 @@ module drawGuideDots() {
 	  assign( charMap = [1,2,3,4,5,6] )
      for(i = [0: len(charMap)-1]) 
         assign(dot = charMap[i] - 1)
-        drawDot(   [floor(dot / 3) * font_dotWidth,  -((dot %3) * font_dotWidth),   0],  font_dotRadius, [.25,.25,.25] );
+        drawDot(   [floor(dot / 3) * font_dotWidth,  -((dot %3) * font_dotWidth),   0],  font_dotRadius * .5 );
 }
 
 module magnet(letter) {
@@ -95,15 +89,17 @@ module magnet(letter) {
      difference () {
         union() {
             // main rectangle
-            cylinder(r = cylinderRadius,h = cylinderDepth);
+            //cylinder(r = cylinderRadius,h = cylinderDepth);
+				translate([0,0,cylinderDepth/2])
+				resize(newsize=[cylinderRadius*2,cylinderRadius*2,cylinderDepth]) sphere(r=cylinderRadius);  
             // write regular letter
             translate([-cylinderRadius/3.0,0,cylinderDepth])
 					write(letter,t=font_dotSphereOffset,h=cylinderRadius,center=true, font = "orbitron.dxf");
 				// chars
-				translate([cylinderRadius/3.0,0,cylinderDepth])
+				translate([cylinderRadius/4.0,font_dotWidth,cylinderDepth])
             	transcribeChar(letter);
 				// indicators
-				translate([cylinderRadius/3.0,0,cylinderDepth])
+				translate([cylinderRadius/4.0,font_dotWidth,cylinderDepth])
 					drawGuideDots();
         } // end union
         
