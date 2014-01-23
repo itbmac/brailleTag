@@ -1,10 +1,10 @@
 /*
-  	Braille Tag
+  	Braille Fridge Magnet
 	Spencer Barton
 
 	based on http://www.thingiverse.com/thing:47411 by kitwallace
 
-	Directions: Upload your text to be converted to braille and placed on a tag
+	Directions: Upload your alphebetic character [A-Z,a-z] to be converted to braille and placed on a tag
 
   	mods :
 
@@ -14,23 +14,27 @@
 
 */
 
+use <Write.scad>
 
-function max_length_r(v, i, max) =
-     i == len(v) ? max : max_length_r(v, i+1, len(v[i]) > max ? len(v[i]) : max);
-
-function max_length(v) = max_length_r(v,0,0);
-
-// dot is not a hemisphere 
-
-function chord_radius(length,height) = ( length * length /(4 * height) + height)/2;
+/*===================================================
+  Global Vars
+  =================================================== */
 
 font_charKeys = ["a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F", "g", "G", "h", "H", "i", "I", "j", "J", "k", "K", "l", "L", "m", "M", "n", "N", "o", "O", "p", "P", "q", "Q", "r", "R", "s", "S", "t", "T", "u", "U", "v", "V", "w", "W", "x", "X", "y", "Y", "z", "Z", ",", ";", ":", ".", "!", "(", ")", "?", "\"", "*", "'", "-"];
 
 font_charValues = [[1], [1], [1, 2], [1, 2], [1, 4], [1, 4], [1, 4, 5], [1, 4, 5], [1, 5], [1, 5], [1, 2, 4], [1, 2, 4], [1, 2, 4, 5], [1, 2, 4, 5], [1, 2, 5], [1, 2, 5], [2, 4], [2, 4], [2, 4, 5], [2, 4, 5], [1, 3], [1, 3], [1, 2, 3], [1, 2, 3], [1, 3, 4], [1, 3, 4], [1, 3, 4, 5], [1, 3, 4, 5], [1, 3, 5], [1, 3, 5], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 5], [1, 2, 3, 5], [2, 3, 4], [2, 3, 4], [2, 3, 4, 5], [2, 3, 4, 5], [1, 3, 6], [1, 3, 6], [1, 2, 3, 6], [1, 2, 3, 6], [2, 4, 5, 6], [2, 4, 5, 6], [1, 3, 4, 6], [1, 3, 4, 6], [1, 3, 4, 5, 6], [1, 3, 4, 5, 6], [1, 3, 5, 6], [1, 3, 5, 6], [2], [2, 3], [2, 5], [2, 5, 6], [2, 3, 5], [2, 3, 5, 6], [2, 3, 5, 6], [2, 3, 6], [2, 3, 6], [3, 5], [3], [3, 6]];
 
-num_charKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
-num_sym = [3,4,5,6];
-num_charValues = [[1], [1, 2], [1, 4], [1, 4, 5], [1, 5], [1, 2, 4], [1, 2, 4, 5], [1, 2, 5], [2, 4], [2, 4, 5]];
+
+/*===================================================
+  Functions
+  =================================================== */
+
+// dot is not a hemisphere 
+function chord_radius(length,height) = ( length * length /(4 * height) + height)/2;
+
+/*===================================================
+  Modules
+  =================================================== */
 
 module drawDot(location) {	
     translate(location) 
