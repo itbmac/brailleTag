@@ -94,7 +94,7 @@ module magnet(letter) {
 					cylinder(r = cylinderRadius,h = cylinderDepth);
 				} else {
 					translate([0,0,cylinderDepth/2])
-						resize(newsize=[cylinderRadius*2,cylinderRadius*2,cylinderDepth]) sphere(r=cylinderRadius);  
+						resize(newsize=[cylinderRadius*2.5,cylinderRadius*2,cylinderDepth]) sphere(r=cylinderRadius);  
 				}
             // write regular letter
             translate([-cylinderRadius/3.0,0,cylinderDepth])
